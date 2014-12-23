@@ -16,9 +16,8 @@ my %CREDENTIALS_PROFILE_OF;
 my $CONFIG;
 my %CONFIG_PROFILE_OF;
 
-my %ACCESSORS;
 BEGIN: {
-    %ACCESSORS = (
+    my %accessor_of = (
         access_key_id     => +{ env => 'AWS_ACCESS_KEY_ID',     key => 'aws_access_key_id' },
         secret_access_key => +{ env => 'AWS_SECRET_ACCESS_KEY', key => 'aws_secret_access_key' },
         session_token     => +{ env => 'AWS_SESSION_TOKEN',     key => 'aws_session_token' },
@@ -28,9 +27,9 @@ BEGIN: {
 
     MK_ACCESSOR: {
         no strict 'refs';
-        for my $attr (keys %ACCESSORS) {
+        for my $attr (keys %accessor_of) {
             my $func = __PACKAGE__ . "::$attr";
-            *{$func} = _mk_accessor($attr, %{$ACCESSORS{$attr}});
+            *{$func} = _mk_accessor($attr, %{$accessor_of{$attr}});
         }
     }
 }
