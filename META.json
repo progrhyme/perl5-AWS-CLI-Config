@@ -1,5 +1,5 @@
 {
-   "abstract" : "It's new $module",
+   "abstract" : "Interface to access AWS CLI configs and credentials",
    "author" : [
       "YASUTAKE Kiyoshi <yasutake.kiyoshi@gmail.com>"
    ],
@@ -52,6 +52,17 @@
       }
    },
    "release_status" : "unstable",
+   "resources" : {
+      "bugtracker" : {
+         "web" : "https://github.com/key-amb/perl5-AWS-CLI-Config/issues"
+      },
+      "homepage" : "https://github.com/key-amb/perl5-AWS-CLI-Config",
+      "repository" : {
+         "type" : "git",
+         "url" : "git://github.com/key-amb/perl5-AWS-CLI-Config.git",
+         "web" : "https://github.com/key-amb/perl5-AWS-CLI-Config"
+      }
+   },
    "version" : "0.01",
    "x_authority" : "cpan:KEYAMB"
 }
