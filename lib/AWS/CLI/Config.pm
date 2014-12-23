@@ -138,15 +138,74 @@ __END__
 
 =head1 NAME
 
-AWS::CLI::Config - It's new $module
+AWS::CLI::Config - Interface to access AWS CLI configs and credentials
 
 =head1 SYNOPSIS
 
     use AWS::CLI::Config;
+    my $aws_access_key_id     = AWS::CLI::Config::access_key_id;
+    my $aws_secret_access_key = AWS::CLI::Config::secret_access_key($profile);
+    my $aws_session_token     = AWS::CLI::Config::session_token($profile);
+    my $region                = AWS::CLI::Config::region($profile);
 
 =head1 DESCRIPTION
 
-AWS::CLI::Config is ...
+B<AWS::CLI::Config> is interface to access AWS CLI configuration and credentials.
+It fetches configured value from environment varialbes or credential file or
+config file in order of priority.
+The priority order is described in L<AWS CLI Documents|http://docs.aws.amazon.com/cli/>.
+
+=head1 SUBROUTINES
+
+=head2 access_key_id (Str)
+
+Fetches $ENV{AWS_ACCESS_KEY_ID} or I<aws_access_key_id> defined in credential
+file or in config file.
+You can specify your profile by first argument (optional).
+
+=head2 secret_access_key (Str)
+
+Fetches $ENV{AWS_SECRET_ACCESS_KEY} or I<aws_secret_access_key> defined in credential
+file or in config file.
+You can specify your profile by first argument (optional).
+
+=head2 session_token (Str)
+
+Fetches $ENV{AWS_SESSION_TOKEN} or I<aws_session_token> defined in credential
+file or in config file.
+You can specify your profile by first argument (optional).
+
+=head2 region (Str)
+
+Fetches $ENV{AWS_DEFAULT_REGION} or I<region> defined in credential
+file or in config file.
+You can specify your profile by first argument (optional).
+
+=head2 output (Str)
+
+Fetches I<output> defined in credential file or in config file.
+You can specify your profile by first argument (optional).
+
+=head2 credentials (Str)
+
+Fetches information from credential file if it exists.
+You can specify your profile by first argument (optional).
+
+=head2 config (Str)
+
+Fetches information from config file if it exists.
+$ENV{AWS_CONFIG_FILE} can override default path of the file.
+You can specify your profile by first argument (optional).
+
+=head1 LIMITATIONS
+
+"Instance profile credentials" are not supported by this module yet which is
+supported in original AWS CLI.
+
+=head1 SEE ALSO
+
+L<Net::Amazon::Config>,
+L<http://aws.amazon.com/cli/>
 
 =head1 LICENSE
 
