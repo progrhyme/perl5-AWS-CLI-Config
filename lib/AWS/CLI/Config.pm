@@ -76,6 +76,8 @@ sub credentials {
 
 sub config {
     my $profile = shift || _default_profile();
+    $profile = "profile $profile" unless $profile eq 'default';
+
     $CONFIG ||= sub {
         my $path
             = (exists $ENV{AWS_CONFIG_FILE} && $ENV{AWS_CONFIG_FILE})
