@@ -70,7 +70,7 @@ sub credentials {
         return _parse($path);
     }->();
     return unless (exists $CREDENTIALS->{$profile});
-    $CREDENTIALS_PROFILE_OF{$profile} ||= AWS::CLI::Config::Profile->_new($CREDENTIALS->{$profile});
+    $CREDENTIALS_PROFILE_OF{$profile} ||= AWS::CLI::Config::Profile->new($CREDENTIALS->{$profile});
     return $CREDENTIALS_PROFILE_OF{$profile};
 }
 
@@ -88,7 +88,7 @@ sub config {
     }->();
 
     return unless (exists $CONFIG->{$profile});
-    $CONFIG_PROFILE_OF{$profile} ||= AWS::CLI::Config::Profile->_new($CONFIG->{$profile});
+    $CONFIG_PROFILE_OF{$profile} ||= AWS::CLI::Config::Profile->new($CONFIG->{$profile});
     return $CONFIG_PROFILE_OF{$profile};
 }
 
@@ -144,32 +144,36 @@ sub _parse {
 
 PROFILE: {
     package AWS::CLI::Config::Profile;
+
     use 5.008001;
     use strict;
     use warnings;
 
-    my @ACCESSORS;
-
-    BEGIN {
-        @ACCESSORS = qw(
-            aws_access_key_id
-            aws_secret_access_key
-            aws_session_token
-            region
-            output
-        );
+    sub new {
+        my $class = shift;
+        my $data = @_ ? @_ > 1 ? { @_ } : shift : {};
+        return bless $data, $class;
     }
 
-    use Object::Tiny @ACCESSORS;
+    sub AUTOLOAD {
+        our $AUTOLOAD;
+        my $self = shift;
 
-    sub _new {
-        my $class = shift;
-        my $data  = shift;
-        return bless $data, $class;
+        return if $AUTOLOAD =~ /DESTROY/;
+        my $method = $AUTOLOAD;
+           $method =~ s/.*:://;
+
+        no strict 'refs';
+        *{$AUTOLOAD} = sub {
+          return shift->{$method}
+        };
+
+        return $self->{$method};
     }
 }
 
 1;
+
 __END__
 
 =encoding utf-8
