@@ -176,7 +176,7 @@ PROFILE: {
 
 __END__
 
-=encoding utf-8
+=encoding UTF-8
 
 =head1 NAME
 
