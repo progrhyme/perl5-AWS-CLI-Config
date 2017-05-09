@@ -7,7 +7,7 @@ use Carp ();
 use Config::Tiny;
 use File::Spec;
 
-our $VERSION = "0.01";
+our $VERSION = "0.02";
 
 my $DEFAULT_PROFILE = 'default';
 

@@ -12,7 +12,7 @@ AWS::CLI::Config - Interface to access AWS CLI configs and credentials
 
 # DESCRIPTION
 
-__AWS::CLI::Config__ is interface to access AWS CLI configuration and credentials.
+**AWS::CLI::Config** is interface to access AWS CLI configuration and credentials.
 It fetches configured value from environment varialbes or credential file or
 config file in order of priority.
 The priority order is described in [AWS CLI Documents](http://docs.aws.amazon.com/cli/).

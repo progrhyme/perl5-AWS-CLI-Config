@@ -4,7 +4,7 @@
       "YASUTAKE Kiyoshi <yasutake.kiyoshi@gmail.com>"
    ],
    "dynamic_config" : 0,
-   "generated_by" : "Minilla/v2.3.0, CPAN::Meta::Converter version 2.143240",
+   "generated_by" : "Minilla/v3.0.10, CPAN::Meta::Converter version 2.150005",
    "license" : [
       "perl_5"
    ],
@@ -66,6 +66,10 @@
          "web" : "https://github.com/key-amb/perl5-AWS-CLI-Config"
       }
    },
-   "version" : "0.01",
-   "x_authority" : "cpan:KEYAMB"
+   "version" : "0.02",
+   "x_authority" : "cpan:KEYAMB",
+   "x_contributors" : [
+      "José Joaquín Atria <jjatria@gmail.com>"
+   ],
+   "x_serialization_backend" : "JSON::PP version 2.27300"
 }
