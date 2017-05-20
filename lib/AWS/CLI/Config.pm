@@ -7,7 +7,7 @@ use Carp ();
 use File::Spec;
 use autodie;
 
-our $VERSION = "0.02";
+our $VERSION = "0.03";
 
 my $DEFAULT_PROFILE = 'default';
 
