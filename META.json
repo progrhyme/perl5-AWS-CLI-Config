@@ -65,7 +65,7 @@
          "web" : "https://github.com/key-amb/perl5-AWS-CLI-Config"
       }
    },
-   "version" : "0.03",
+   "version" : "0.04",
    "x_authority" : "cpan:KEYAMB",
    "x_contributors" : [
       "José Joaquín Atria <jjatria@gmail.com>"
