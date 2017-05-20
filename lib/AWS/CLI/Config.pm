@@ -4,8 +4,8 @@ use strict;
 use warnings;
 
 use Carp ();
-use Config::Tiny;
 use File::Spec;
+use autodie;
 
 our $VERSION = "0.02";
 
@@ -67,7 +67,7 @@ sub credentials {
     $CREDENTIALS ||= sub {
         my $path = File::Spec->catfile(_default_dir(), 'credentials');
         return +{} unless (-r $path);
-        return Config::Tiny->read($path);
+        return _parse($path);
     }->();
     return unless (exists $CREDENTIALS->{$profile});
     $CREDENTIALS_PROFILE_OF{$profile} ||= AWS::CLI::Config::Profile->_new($CREDENTIALS->{$profile});
@@ -76,7 +76,6 @@ sub credentials {
 
 sub config {
     my $profile = shift || _default_profile();
-    $profile = "profile $profile" unless $profile eq 'default';
 
     $CONFIG ||= sub {
         my $path
@@ -84,8 +83,10 @@ sub config {
             ? $ENV{AWS_CONFIG_FILE}
             : File::Spec->catfile(_default_dir(), 'config');
         return +{} unless (-r $path);
-        return Config::Tiny->read($path);
+
+        return _parse($path);
     }->();
+
     return unless (exists $CONFIG->{$profile});
     $CONFIG_PROFILE_OF{$profile} ||= AWS::CLI::Config::Profile->_new($CONFIG->{$profile});
     return $CONFIG_PROFILE_OF{$profile};
@@ -103,6 +104,42 @@ sub _default_profile {
     (exists $ENV{AWS_DEFAULT_PROFILE} && $ENV{AWS_DEFAULT_PROFILE})
         ? $ENV{AWS_DEFAULT_PROFILE}
         : $DEFAULT_PROFILE;
+}
+
+sub _parse {
+  my $file = shift;
+  my $profile = shift || _default_profile();
+
+  my $hash = {};
+  my $nested = {};
+
+  my $contents;
+  {
+    local $/  = undef;
+    open my $fh, '<', $file;
+    $contents = <$fh>;
+    close( $fh );
+  }
+
+  foreach my $line (split /\n/, $contents) {
+    chomp $line;
+
+    $profile = $1 if $line =~ /^\[(?:profile )?([\w]+)\]/;
+    my ($indent, $key, $value) = $line =~ /^(\s*)([\w]+)\s*=\s*(.*)/;
+
+    next if !defined $key or $key eq q{};
+
+    if (length $indent) {
+      $nested->{$key} = $value;
+    }
+    else {
+      # Reset nested hash
+      $nested = {} if keys %{$nested};
+      $hash->{$profile}{$key} = ($key and $value) ? $value : $nested;
+    }
+  }
+
+  return $hash;
 }
 
 PROFILE: {
