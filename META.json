@@ -42,7 +42,6 @@
       },
       "runtime" : {
          "requires" : {
-            "Config::Tiny" : "0",
             "Object::Tiny" : "0",
             "perl" : "5.008001"
          }
