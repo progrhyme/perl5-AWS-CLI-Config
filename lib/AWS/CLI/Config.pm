@@ -112,40 +112,44 @@ sub _default_profile {
         : $DEFAULT_PROFILE;
 }
 
+# This only supports one level of nesting, but it seems AWS config files
+# themselves only have but one level
 sub _parse {
     my $file = shift;
     my $profile = shift || _default_profile();
 
-  my $hash = {};
-  my $nested = {};
+    my $hash = {};
+    my $nested = {};
 
-  my $contents;
-  {
-    local $/  = undef;
-    open my $fh, '<', $file;
-    $contents = <$fh>;
-    close( $fh );
-  }
+    return +{} unless -r $file;
 
-  foreach my $line (split /\n/, $contents) {
-    chomp $line;
-
-    $profile = $1 if $line =~ /^\[(?:profile )?([\w]+)\]/;
-    my ($indent, $key, $value) = $line =~ /^(\s*)([\w]+)\s*=\s*(.*)/;
-
-    next if !defined $key or $key eq q{};
-
-    if (length $indent) {
-      $nested->{$key} = $value;
+    my $contents;
+    {
+        local $/  = undef;
+        open my $fh, '<', $file;
+        $contents = <$fh>;
+        close( $fh );
     }
-    else {
-      # Reset nested hash
-      $nested = {} if keys %{$nested};
-      $hash->{$profile}{$key} = ($key and $value) ? $value : $nested;
-    }
-  }
 
-  return $hash;
+    foreach my $line (split /\n/, $contents) {
+        chomp $line;
+
+        $profile = $1 if $line =~ /^\[(?:profile )?([\w]+)\]/;
+        my ($indent, $key, $value) = $line =~ /^(\s*)([\w]+)\s*=\s*(.*)/;
+
+        next if !defined $key or $key eq q{};
+
+        if (length $indent) {
+            $nested->{$key} = $value;
+        }
+        else {
+            # Reset nested hash
+            $nested = {} if keys %{$nested};
+            $hash->{$profile}{$key} = ($key and $value) ? $value : $nested;
+        }
+    }
+
+    return $hash;
 }
 
 PROFILE: {
