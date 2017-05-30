@@ -1,4 +1,5 @@
 package AWS::CLI::Config;
+
 use 5.008001;
 use strict;
 use warnings;
@@ -7,7 +8,7 @@ use Carp ();
 use File::Spec;
 use autodie;
 
-our $VERSION = "0.04";
+our $VERSION = '0.04';
 
 my $DEFAULT_PROFILE = 'default';
 
