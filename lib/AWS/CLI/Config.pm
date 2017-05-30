@@ -17,20 +17,26 @@ my $CONFIG;
 my %CONFIG_PROFILE_OF;
 
 BEGIN: {
-    my %accessor_of = (
-        access_key_id     => +{ env => 'AWS_ACCESS_KEY_ID',     key => 'aws_access_key_id' },
-        secret_access_key => +{ env => 'AWS_SECRET_ACCESS_KEY', key => 'aws_secret_access_key' },
-        session_token     => +{ env => 'AWS_SESSION_TOKEN',     key => 'aws_session_token' },
-        region            => +{ env => 'AWS_DEFAULT_REGION' },
-        output            => +{},
+    my %attributes = (
+        access_key_id => {
+            env => 'AWS_ACCESS_KEY_ID',
+            key => 'aws_access_key_id'
+        },
+        secret_access_key => {
+            env => 'AWS_SECRET_ACCESS_KEY',
+            key => 'aws_secret_access_key',
+        },
+        session_token => {
+            env => 'AWS_SESSION_TOKEN',
+            key => 'aws_session_token',
+        },
+        region => { env => 'AWS_DEFAULT_REGION' },
+        output => {},
     );
 
-    MK_ACCESSOR: {
+    while (my ($name, $opts) = each %attributes) {
         no strict 'refs';
-        for my $attr (keys %accessor_of) {
-            my $func = __PACKAGE__ . "::$attr";
-            *{$func} = _mk_accessor($attr, %{$accessor_of{$attr}});
-        }
+        *{__PACKAGE__ . "::$name"} = _mk_accessor($name, %{$opts});
     }
 }
 
@@ -64,31 +70,31 @@ sub _mk_accessor {
 
 sub credentials {
     my $profile = shift || _default_profile();
-    $CREDENTIALS ||= sub {
-        my $path = File::Spec->catfile(_default_dir(), 'credentials');
-        return +{} unless (-r $path);
-        return _parse($path);
-    }->();
+
+    $CREDENTIALS ||= _parse(
+        (exists $ENV{AWS_CONFIG_FILE} and $ENV{AWS_CONFIG_FILE})
+            ? $ENV{AWS_CONFIG_FILE}
+            : File::Spec->catfile(_default_dir(), 'credentials')
+    );
+
     return unless (exists $CREDENTIALS->{$profile});
-    $CREDENTIALS_PROFILE_OF{$profile} ||= AWS::CLI::Config::Profile->new($CREDENTIALS->{$profile});
+    $CREDENTIALS_PROFILE_OF{$profile} ||=
+        AWS::CLI::Config::Profile->new($CREDENTIALS->{$profile});
     return $CREDENTIALS_PROFILE_OF{$profile};
 }
 
 sub config {
     my $profile = shift || _default_profile();
 
-    $CONFIG ||= sub {
-        my $path
-            = (exists $ENV{AWS_CONFIG_FILE} && $ENV{AWS_CONFIG_FILE})
+    $CONFIG ||= _parse(
+        (exists $ENV{AWS_CONFIG_FILE} and $ENV{AWS_CONFIG_FILE})
             ? $ENV{AWS_CONFIG_FILE}
-            : File::Spec->catfile(_default_dir(), 'config');
-        return +{} unless (-r $path);
-
-        return _parse($path);
-    }->();
+            : File::Spec->catfile(_default_dir(), 'config')
+    );
 
     return unless (exists $CONFIG->{$profile});
-    $CONFIG_PROFILE_OF{$profile} ||= AWS::CLI::Config::Profile->new($CONFIG->{$profile});
+    $CONFIG_PROFILE_OF{$profile} ||=
+        AWS::CLI::Config::Profile->new($CONFIG->{$profile});
     return $CONFIG_PROFILE_OF{$profile};
 }
 
@@ -107,8 +113,8 @@ sub _default_profile {
 }
 
 sub _parse {
-  my $file = shift;
-  my $profile = shift || _default_profile();
+    my $file = shift;
+    my $profile = shift || _default_profile();
 
   my $hash = {};
   my $nested = {};
