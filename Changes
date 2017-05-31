@@ -2,6 +2,9 @@ Revision history for Perl extension AWS-CLI-Config
 
 {{$NEXT}}
 
+    - convert from Object::Tiny to Class::Tiny in AWS::CLI::Config::Profile,
+      for easier subclassing.
+
 0.04 2017-05-20T06:41:39Z
 
     - [Trivial] Drop Config::Tiny from dependencies

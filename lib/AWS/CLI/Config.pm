@@ -160,7 +160,7 @@ PROFILE: {
         );
     }
 
-    use Object::Tiny @ACCESSORS;
+    use Class::Tiny @ACCESSORS;
 
     sub _new {
         my $class = shift;
