@@ -1,4 +1,4 @@
-requires 'Object::Tiny';
+requires 'Class::Tiny';
 requires 'perl', '5.008001';
 
 on configure => sub {
