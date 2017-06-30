@@ -203,62 +203,75 @@ AWS::CLI::Config - Interface to access AWS CLI configs and credentials
 
 =head1 DESCRIPTION
 
-B<AWS::CLI::Config> is interface to access AWS CLI configuration and credentials.
-It fetches configured value from environment varialbes or credential file or
-config file in order of priority.
-The priority order is described in L<AWS CLI Documents|http://docs.aws.amazon.com/cli/>.
+B<AWS::CLI::Config> provides an interface to access AWS CLI configuration and
+credentials. It fetches its values from the appropriate environment variables,
+or a credential or config file in the order described in
+L<AWS CLI Documents|http://docs.aws.amazon.com/cli/>.
 
 =head1 SUBROUTINES
 
 =head2 access_key_id (Str)
 
-Fetches $ENV{AWS_ACCESS_KEY_ID} or I<aws_access_key_id> defined in credential
-file or in config file.
-You can specify your profile by first argument (optional).
+Fetches $ENV{AWS_ACCESS_KEY_ID} or I<aws_access_key_id> defined in the
+credential or config file. You can optionally specify the profile as the
+first argument.
 
 =head2 secret_access_key (Str)
 
-Fetches $ENV{AWS_SECRET_ACCESS_KEY} or I<aws_secret_access_key> defined in credential
-file or in config file.
-You can specify your profile by first argument (optional).
+Fetches $ENV{AWS_SECRET_ACCESS_KEY} or I<aws_secret_access_key> defined in
+the credential or config file. You can optionally specify the profile as
+the first argument.
 
 =head2 session_token (Str)
 
-Fetches $ENV{AWS_SESSION_TOKEN} or I<aws_session_token> defined in credential
-file or in config file.
-You can specify your profile by first argument (optional).
+Fetches $ENV{AWS_SESSION_TOKEN} or I<aws_session_token> defined in the
+credential or config file. You can optionally specify the profile as the first
+argument.
 
 =head2 region (Str)
 
-Fetches $ENV{AWS_DEFAULT_REGION} or I<region> defined in credential
-file or in config file.
-You can specify your profile by first argument (optional).
+Fetches $ENV{AWS_DEFAULT_REGION} or I<region> defined in the credential or
+config file. You can optionally specify the profile as the first argument.
 
 =head2 output (Str)
 
-Fetches I<output> defined in credential file or in config file.
-You can specify your profile by first argument (optional).
+Fetches I<output> defined in the credential or config file. You can optionally
+specify the profile as the first argument.
 
 =head2 credentials (Str)
 
-Fetches information from credential file if it exists.
-You can specify your profile by first argument (optional).
+Fetches information from the credential file if it exists. You can optionally
+specify the profile as the first argument.
 
 =head2 config (Str)
 
-Fetches information from config file if it exists.
-$ENV{AWS_CONFIG_FILE} can override default path of the file.
-You can specify your profile by first argument (optional).
+Fetches information from the config file if it exists. If you need to override
+the default path of this file, use the C<$ENV{AWS_CONFIG_FILE}> variable.
+You can optionally specify the profile as the first argument.
+
+=head2 Automatic accessors
+
+Accessors will also be automatically generated for all top-level keys in a given
+profile the first time they are called. They will be cached, so that you only
+pay this cost if you ask for it, and only do so once.
+
+The accessors will have the same name as the keys they represent.
+
+Please note, however, that accessors will B<not> be generated for nested values.
 
 =head1 LIMITATIONS
 
-"Instance profile credentials" are not supported by this module yet which is
-supported in original AWS CLI.
+"Instance profile credentials" are not yet supported by this module.
 
 =head1 SEE ALSO
 
-L<Net::Amazon::Config>,
-L<http://aws.amazon.com/cli/>
+=over 4
+
+=item * L<Net::Amazon::Config>,
+
+=item * L<http://aws.amazon.com/cli/>
+
+=back
 
 =head1 LICENSE
 
@@ -267,9 +280,21 @@ Copyright (C) IKEDA Kiyoshi.
 This library is free software; you can redistribute it and/or modify
 it under the same terms as Perl itself.
 
-=head1 AUTHORS
+=head1 AUTHOR
 
-IKEDA Kiyoshi E<lt>yasutake.kiyoshi@gmail.comE<gt>
+=over 4
+
+=item * IKEDA Kiyoshi E<lt>keyamb@cpan.orgE<gt>
+
+=back
+
+=head1 CONTRIBUTORS
+
+=over 4
+
+=item * José Joaquín Atria E<lt>jjatria@cpan.orgE<gt>
+
+=back
 
 =cut
 
